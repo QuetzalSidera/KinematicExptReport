@@ -1,0 +1,98 @@
+\documentclass[UTF8,a4paper,fontset=fandol]{ctexart}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{fancyvrb}
+
+\begin{document}
+\noindent{\LARGE\bfseries 实验二：平面五连杆并联机器人系统控制}
+\par\vspace{1em}
+
+\section*{三、实验数据记录}
+以下内容记录的是本次程序中采用的轨迹参数、轨迹点数与设定运行时间，便于实验复现与结果对照。
+
+\begin{center}
+\textbf{实验数据表}
+\end{center}
+
+\begin{center}
+\begin{tabularx}{0.92\textwidth}{|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+\hline
+\multicolumn{3}{|c|}{1、控制平面五连杆并联机器人末端画矩形。} \\
+\hline
+\multicolumn{3}{|c|}{程序运行的参数} \\
+\hline
+矩形起始点坐标值 & 矩形轨迹点数 & 矩形运行时间 \\
+\hline
+$[-80,\,260]$，宽 $120$，高 $80$ & $321$ & $20\ \mathrm{s}$ \\
+\hline
+正方形起始点坐标值 & 正方形轨迹点数 & 正方形运行时间 \\
+\hline
+$[-80,\,260]$，边长 $50$ & $321$ & $20\ \mathrm{s}$ \\
+\hline
+\multicolumn{3}{|c|}{2、控制平面五连杆并联机器人末端画同心圆。} \\
+\hline
+\multicolumn{3}{|c|}{程序运行的参数} \\
+\hline
+圆A起始点坐标值 & 圆A轨迹点数 & 圆A运行时间 \\
+\hline
+$[20,\,240]$，圆心 $[0,\,240]$，半径 $20$ & $183$ & $12\ \mathrm{s}$ \\
+\hline
+圆B起始点坐标值 & 圆B轨迹点数 & 圆B运行时间 \\
+\hline
+$[40,\,240]$，圆心 $[0,\,240]$，半径 $40$ & $183$ & $12\ \mathrm{s}$ \\
+\hline
+圆C起始点坐标值 & 圆C轨迹点数 & 圆C运行时间 \\
+\hline
+$[60,\,240]$，圆心 $[0,\,240]$，半径 $60$ & $183$ & $12\ \mathrm{s}$ \\
+\hline
+\multicolumn{3}{|c|}{3、控制平面五连杆并联机器人末端画正三角形。（选）} \\
+\hline
+\multicolumn{3}{|c|}{程序运行的参数} \\
+\hline
+三角形起始点坐标值 & 三角形轨迹点数 & 三角形运行时间 \\
+\hline
+$[-10,\,214.23]$ & $303$ & $20\ \mathrm{s}$ \\
+\hline
+\end{tabularx}
+\end{center}
+
+\section*{四、附图}
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{FiveBar/Img/FiveBar.jpg}
+\end{center}
+
+\section*{五、程序附录}
+\subsection*{1. 绘制矩形程序}
+\begin{Verbatim}[fontsize=\small,frame=single]
+def draw_rectangle(pl=[-80, 260], l=50, h=50, n=80):
+    """生成矩形轨迹点。"""
+
+    pl_list = [pl[:]]  # 先把起点加入轨迹列表
+    l_delta = l / n  # 计算水平方向每一步的位移
+    h_delta = h / n  # 计算竖直方向每一步的位移
+
+    for i in range(1, n + 1):
+        pl_list.append([pl[0] + i * l_delta, pl[1]])  # 沿矩形上边从左向右生成轨迹点
+    for i in range(1, n + 1):
+        pl_list.append([pl[0] + l, pl[1] - i * h_delta])  # 沿右边从上向下生成轨迹点
+    for i in range(1, n + 1):
+        pl_list.append([pl[0] + l - i * l_delta, pl[1] - h])  # 沿下边从右向左生成轨迹点
+    for i in range(1, n + 1):
+        pl_list.append([pl[0], pl[1] - h + i * h_delta])  # 沿左边从下向上生成轨迹点并闭合
+
+    return pl_list  # 返回完整矩形轨迹
+\end{Verbatim}
+
+\subsection*{2. 程序优化方案}
+\begin{enumerate}
+    \item 将矩形、同心圆、正三角形的轨迹生成函数统一抽象为“返回点列”的接口，便于不同机器人复用。
+    \item 对同心圆轨迹在末尾增加重复起点，减小闭合位置的空隙。
+    \item 将运行速度、轨迹点数和运行时间集中成参数，方便根据实验纸张尺寸与机构工作空间快速调整。
+\end{enumerate}
+
+\end{document}

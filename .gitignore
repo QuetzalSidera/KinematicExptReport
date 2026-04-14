@@ -1,0 +1,51 @@
+.idea/
+.venv/
+__pycache__/
+.DS_Store
+
+# Python environments
+venv/
+env/
+.env/
+.python-version
+
+# Python cache / tooling
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# LaTeX build outputs
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.synctex.gz(busy)
+*.toc
+*.xdv
+
+# Compiled report outputs
+*.pdf
+
+# Experiment images
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.gif
+
+# macOS / editor temp files
+*.swp
+*.swo

@@ -1,0 +1,98 @@
+\documentclass[UTF8,a4paper,fontset=fandol]{ctexart}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{fancyvrb}
+
+\begin{document}
+\noindent{\LARGE\bfseries 实验三：平面3-RRR并联机器人系统控制}
+\par\vspace{1em}
+
+\section*{三、实验数据记录}
+以下为本次控制程序采用的主要参数记录，用于和现场实验结果一一对应。
+
+\begin{center}
+\textbf{实验数据表}
+\end{center}
+
+\begin{center}
+\begin{tabularx}{0.92\textwidth}{|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+\hline
+\multicolumn{3}{|c|}{1、控制平面3-RRR并联机器人末端画同心圆。} \\
+\hline
+\multicolumn{3}{|c|}{程序运行的参数} \\
+\hline
+圆A起始点坐标值 & 圆A轨迹点数 & 圆A运行时间 \\
+\hline
+$[15,\,0]$，圆心 $[0,\,0]$，$\phi=-30^\circ$ & $183$ & $8\ \mathrm{s}$ \\
+\hline
+圆B起始点坐标值 & 圆B轨迹点数 & 圆B运行时间 \\
+\hline
+$[30,\,0]$，圆心 $[0,\,0]$，$\phi=-30^\circ$ & $183$ & $8\ \mathrm{s}$ \\
+\hline
+\multicolumn{3}{|c|}{2、控制平面3-RRR并联机器人末端画正三角形。} \\
+\hline
+\multicolumn{3}{|c|}{程序运行的参数} \\
+\hline
+三角形起始点坐标值 & 三角形轨迹点数 & 三角形运行时间 \\
+\hline
+$[-20,\,-11.55]$，$\phi=-30^\circ$ & $303$ & $10\ \mathrm{s}$ \\
+\hline
+\multicolumn{3}{|c|}{3、控制平面3-RRR并联机器人末端画矩形。（选）} \\
+\hline
+\multicolumn{3}{|c|}{程序运行的参数} \\
+\hline
+矩形起始点坐标值 & 矩形轨迹点数 & 矩形运行时间 \\
+\hline
+$[-25,\,35]$，宽 $50$，高 $50$，$\phi=-30^\circ$ & $321$ & $10\ \mathrm{s}$ \\
+\hline
+正方形起始点坐标值 & 正方形轨迹点数 & 正方形运行时间 \\
+\hline
+$[-25,\,35]$，边长 $50$，$\phi=-30^\circ$ & $321$ & $10\ \mathrm{s}$ \\
+\hline
+\end{tabularx}
+\end{center}
+
+\section*{四、附图}
+\begin{center}
+    \includegraphics[width=0.78\textwidth]{3-RRR/Img/3-RRR.jpg}
+\end{center}
+
+\section*{五、程序附录}
+\subsection*{1. 绘制同心圆程序}
+\begin{Verbatim}[fontsize=\small,frame=single]
+def draw_concentric_circles(center=[0, 0], radii=None, n=180, overlap_angle_deg=40):
+    """生成同心圆轨迹点，每个圆单独保存。"""
+
+    if radii is None:
+        radii = [15, 30]  # 默认绘制两个半径不同的圆
+
+    circle_list = []  # 用于保存所有圆的轨迹点
+    total_angle = 2 * cm.pi + overlap_angle_deg / 180 * cm.pi  # 多画一点避免收尾缺口
+    angle_delta = total_angle / n  # 每个轨迹点之间的角度步长
+
+    for radius in radii:
+        one_circle = []  # 保存当前这个圆的轨迹
+        for i in range(0, n + 1):
+            x = center[0] + radius * cm.cos(angle_delta * i)  # 计算圆上点的 x 坐标
+            y = center[1] + radius * cm.sin(angle_delta * i)  # 计算圆上点的 y 坐标
+            one_circle.append([x, y])  # 将圆上的点加入当前轨迹
+        one_circle.append(one_circle[0][:])  # 末尾重复起点一次，增强闭合效果
+        one_circle.append(one_circle[0][:])  # 再重复一次，减少笔迹缺口
+        circle_list.append(one_circle)  # 将当前圆加入总轨迹列表
+
+    return circle_list  # 返回所有同心圆轨迹
+\end{Verbatim}
+
+\subsection*{2. 程序优化方案}
+\begin{enumerate}
+    \item 将姿态角 $\phi$ 抽取为独立参数，便于后续比较不同末端姿态对轨迹质量的影响。
+    \item 将同心圆拆分为多个独立闭合轨迹执行，避免半径切换时在纸面上产生连接划痕。
+    \item 为矩形、同心圆、三角形统一保留 \texttt{shape} 入口，实验时仅需切换一个变量即可复用主程序。
+\end{enumerate}
+
+\end{document}

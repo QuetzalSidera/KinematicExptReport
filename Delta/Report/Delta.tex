@@ -1,0 +1,98 @@
+\documentclass[UTF8,a4paper,fontset=fandol]{ctexart}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{fancyvrb}
+
+\begin{document}
+\noindent{\LARGE\bfseries 实验四：Delta并联机器人系统控制}
+\par\vspace{1em}
+
+\section*{三、实验数据记录}
+根据指导书要求，末端笔尖高度不能低于 $-250\,\mathrm{mm}$。本次实验统一选用绘图平面 $z=-245\,\mathrm{mm}$，安全过渡高度设为 $z=-200\,\mathrm{mm}$。
+
+\begin{center}
+\textbf{实验数据表}
+\end{center}
+
+\begin{center}
+\begin{tabularx}{0.92\textwidth}{|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+\hline
+\multicolumn{3}{|c|}{1、控制Delta并联机器人末端画正三角形。} \\
+\hline
+\multicolumn{3}{|c|}{程序运行的参数} \\
+\hline
+三角形起始点坐标值 & 三角形轨迹点数 & 三角形运行时间 \\
+\hline
+$[-20,\,-11.55,\,-245]$ & $303$ & $10\ \mathrm{s}$ \\
+\hline
+\multicolumn{3}{|c|}{2、控制Delta并联机器人末端画矩形。} \\
+\hline
+\multicolumn{3}{|c|}{程序运行的参数} \\
+\hline
+矩形起始点坐标值 & 矩形轨迹点数 & 矩形运行时间 \\
+\hline
+$[-30,\,30,\,-245]$，宽 $60$，高 $40$ & $321$ & $10\ \mathrm{s}$ \\
+\hline
+正方形起始点坐标值 & 正方形轨迹点数 & 正方形运行时间 \\
+\hline
+$[-30,\,30,\,-245]$，边长 $40$ & $321$ & $10\ \mathrm{s}$ \\
+\hline
+\multicolumn{3}{|c|}{3、控制Delta并联机器人末端画同心圆。（选）} \\
+\hline
+\multicolumn{3}{|c|}{程序运行的参数} \\
+\hline
+圆A起始点坐标值 & 圆A轨迹点数 & 圆A运行时间 \\
+\hline
+$[15,\,0,\,-245]$，圆心 $[0,\,0,\,-245]$ & $183$ & $8\ \mathrm{s}$ \\
+\hline
+圆B起始点坐标值 & 圆B轨迹点数 & 圆B运行时间 \\
+\hline
+$[30,\,0,\,-245]$，圆心 $[0,\,0,\,-245]$ & $183$ & $8\ \mathrm{s}$ \\
+\hline
+\end{tabularx}
+\end{center}
+
+\section*{四、附图}
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{Delta/Img/Delta.jpg}
+\end{center}
+
+\section*{五、程序附录}
+\subsection*{1. 绘制正三角形程序}
+\begin{Verbatim}[fontsize=\small,frame=single]
+draw_plane_z = -245  # 定义绘图平面高度，保证笔尖不会低于 -250 mm
+
+def draw_triangle(p1=[-20, -11.55, draw_plane_z],
+p2=[20, -11.55, draw_plane_z], p3=[0, 23.09, draw_plane_z], n=100):
+    """生成正三角形轨迹点。"""
+
+    def segment_points(start, end, point_num):
+        points = []
+        for i in range(0, point_num + 1):
+            ratio = i / point_num  # 计算当前点在边上的比例位置
+            x = start[0] + (end[0] - start[0]) * ratio  # 计算当前点 x 坐标
+            y = start[1] + (end[1] - start[1]) * ratio  # 计算当前点 y 坐标
+            z = start[2] + (end[2] - start[2]) * ratio  # 保持在同一绘图平面
+            points.append([x, y, z])  # 将轨迹点加入当前边
+        return points
+
+    pl_list = []  # 保存整个三角形的所有轨迹点
+    pl_list.extend(segment_points(p1, p2, n))  # 生成第一条边
+    pl_list.extend(segment_points(p2, p3, n))  # 生成第二条边
+    pl_list.extend(segment_points(p3, p1, n))  # 生成第三条边并闭合图形
+    return pl_list  # 返回完整三角形轨迹
+\end{Verbatim}
+
+\subsection*{2. 程序优化方案}
+\begin{enumerate}
+    \item 在执行每条轨迹前先回到安全高度，再下降到起点，可显著减少换轨迹时的划线风险。
+    \item 将绘图平面高度单独定义为变量，便于在不同纸张厚度或笔尖长度下快速修正。
+    \item 同心圆与多边形统一使用点列轨迹执行接口，后续若增加五角星、椭圆等图案，只需补充点列生成函数即可。
+\end{enumerate}
+
+\end{document}
