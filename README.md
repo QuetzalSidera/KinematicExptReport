@@ -39,7 +39,7 @@
 
 ```bash
 git clone https://github.com/QuetzalSidera/KinematicExptReport.git
-cd RobotCourse
+cd KinematicExptReport
 ```
 
 ### 2.2 替换代码与图像
@@ -50,7 +50,7 @@ cd RobotCourse
 - `3-RRR/test.py`
 - `Delta/test.py`
 
-将实验图片放到对应目录：
+新建`Img`目录将实验图片放到对应位置：
 
 - `FiveBar/Img/`
 - `3-RRR/Img/`
