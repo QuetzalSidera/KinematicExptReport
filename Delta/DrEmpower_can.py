@@ -73,8 +73,8 @@ import struct
 uart_baudrate = 460800 # 串口波特率，与CAN模块的串口波特率一致，（出厂默认为最高 460800）
 
 # uart = serial.Serial('/dev/ttyAMA0', uart_baudrate)  # 在树莓派（raspbian）下控制一体化关节，相应的输入连接的串口
-uart = serial.Serial('COM5', uart_baudrate)  # 在 windows 下控制一体化关节，相应的输入连接的COM口和波特率
-# uart = serial.Serial('/dev/ttyUSB0', uart_baudrate)  # 在 jetson nano（ubuntu） 下控制一体化关节，相应的输入连接的串口
+# uart = serial.Serial('COM5', uart_baudrate)  # 在 windows 下控制一体化关节，相应的输入连接的COM口和波特率
+uart = serial.Serial('/dev/cu.usbmodem9286AB910D4B1', uart_baudrate)  # 在 jetson nano（ubuntu） 下控制一体化关节，相应的输入连接的串口
 
 READ_FLAG = 0  # 读取结果标志位
 cur_angle_list = []  # 当前角度列表

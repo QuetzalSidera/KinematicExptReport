@@ -4,7 +4,9 @@ import DrDelta as robot
 max_list_temp = [90, 90, 90]
 min_list_temp = [-42, -42, -42]
 l_temp = [100, 250, 35, 23.4]
-draw_plane_z = -245
+
+safe_z = -237
+draw_plane_z = safe_z
 
 ro = robot.robot(MAX_list_temp=max_list_temp, MIN_list_temp=min_list_temp, L_temp=l_temp)
 
@@ -104,14 +106,14 @@ def run_concentric_circles(circle_list, safe_z=-200, move_speed=10, run_time=8, 
 
 if __name__ == "__main__":
     # 选择要画的图形：'rectangle'、'circles'、'triangle'
-    shape = "triangle"
+    shape = "rectangle"
 
     if shape == "rectangle":
         points = draw_rectangle(pl=[-30, 30, draw_plane_z], l=60, h=40, n=80)
-        run_curve(points, safe_z=-200, start_speed=10, run_time=10, loop=True)
+        run_curve(points, safe_z=safe_z, start_speed=10, run_time=10, loop=True)
     elif shape == "circles":
         circles = draw_concentric_circles(center=[0, 0, draw_plane_z], radii=[15, 30], n=180)
-        run_concentric_circles(circles, safe_z=-200, move_speed=10, run_time=8, loop=True)
+        run_concentric_circles(circles, safe_z=safe_z, move_speed=10, run_time=8, loop=True)
     elif shape == "triangle":
         side = 40
         height = side * cm.sqrt(3) / 2
@@ -121,6 +123,7 @@ if __name__ == "__main__":
             p3=[0, 2 * height / 3, draw_plane_z],
             n=100,
         )
-        run_curve(points, safe_z=-200, start_speed=10, run_time=10, loop=True)
+        # noinspection PyInterpreter
+        run_curve(points, safe_z=safe_z, start_speed=10, run_time=10, loop=True)
     else:
         raise ValueError("shape 只能是 'rectangle'、'circles' 或 'triangle'")
